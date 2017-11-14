@@ -5,7 +5,7 @@ import matplotlib.image as mpimg
 from scipy.misc import imread
 
 
-image = cv2.imread("test.jpg")
+image = cv2.imread("test4.jpg")
 imageO = image
 image_grey = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
@@ -30,6 +30,8 @@ for i in range(s[0]):
 			mag_bin[i,j] = 255
 		else:
 			mag_bin[i,j] = 0
+
+
 
 plt.subplot(2,2,1),plt.imshow(image_grey,cmap = 'gray')
 plt.title('Original')
