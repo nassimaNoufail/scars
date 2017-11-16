@@ -8,12 +8,12 @@ def main():
 	im = imread('test4c.jpg')
 	#rotate image - in degrees
 	# im = ndi.rotate(im, 45, mode='constant')
-	res2, canny_edge = pre_process(im)
-	# plt.subplot(4,1,1), plt.imshow(im,cmap='pink')
-	# plt.subplot(4,1,2), plt.imshow(img,cmap='pink')
-	# plt.subplot(4,1,3), plt.imshow(res2,cmap='pink')
-	# plt.subplot(4,1,4), plt.imshow(canny_edge,cmap='pink')
-	# plt.show()
+	res2, canny_edge, img = pre_process(im)
+	plt.subplot(4,1,1), plt.imshow(im,cmap='pink')
+	plt.subplot(4,1,2), plt.imshow(img,cmap='pink')
+	plt.subplot(4,1,3), plt.imshow(res2,cmap='pink')
+	plt.subplot(4,1,4), plt.imshow(canny_edge,cmap='pink')
+	plt.show()
 	canny_edge = ndi.rotate(canny_edge, 45, mode='constant')
 	white_coord = get_scar_coord(canny_edge)
 	x = white_coord[:,0]
@@ -32,6 +32,7 @@ def main():
 	# mu, K = get_prior(alphaI)     #plotting proir
 	m, S = get_posterior(x, y, alphaI, betaI)  #update posterior
 
+
 	xplot = [0, 650]
 	y1 = [0,0]
 	for n in range(2):
@@ -39,9 +40,6 @@ def main():
 	# plt.subplot(3,1,3),plt.plot(xplot,y1)
 	ax2.plot(xplot, y1, 'r')
 	plt.show()
-
-
-
 
 def get_scar_coord(canny_edge):
 	#convert to a binary image
@@ -69,6 +67,7 @@ def get_scar_coord(canny_edge):
 	return white_coord
 
 def pre_process(im):
+
 	img = im[:,:,2]     #only red channel
 	Z = img.reshape((-1,3))
 	# convert to np.float32 as required from kmeans input
@@ -76,7 +75,7 @@ def pre_process(im):
 
 	# define criteria, number of clusters(K) and apply kmeans()
 	criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
-	K = 2   #number of clusters
+	K = 4   #number of clusters
 	ret,label,center=cv2.kmeans(Z,K,None,criteria,10,cv2.KMEANS_RANDOM_CENTERS)
 
 	#convert back into uint8, and make original image
@@ -86,8 +85,9 @@ def pre_process(im):
 
 	#take canny edges of kmeans
 	canny_edge = cv2.Canny(res2,200,100)
-	return res2, canny_edge
+	return res2, canny_edge, img
 
+########################################
 #functions for Baysian linear regression
 from scipy.stats import norm
 
@@ -114,13 +114,6 @@ def get_posterior(x, y, alphaI, betaI):
 	m = np.dot(first, second)
 	
 	return m, sInv
-
-# def linear_reg(x, y):
-# 	alphaI = 2 * np.eye(2)       #covarance of prior
-# 	betaI = np.eye(2)              #variance of noise in data
-# 	# fig = plt.figure(figsize=(12, 6))
-# 	# mu, K = get_prior(alphaI)     #plotting proir
-# 	m, S = get_posterior(x, y, alphaI, betaI)  #update posterior
 
 if __name__ == "__main__":
     main()
