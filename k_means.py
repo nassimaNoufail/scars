@@ -2,16 +2,19 @@ import numpy as np
 import cv2
 import matplotlib.pyplot as plt
 from scipy.misc import imread
+from scipy import ndimage as ndi
 
 def main():
 	im = imread('test4c.jpg')
+	#rotate image - in degrees
+	# im = ndi.rotate(im, 45, mode='constant')
 	res2, canny_edge = pre_process(im)
 	# plt.subplot(4,1,1), plt.imshow(im,cmap='pink')
 	# plt.subplot(4,1,2), plt.imshow(img,cmap='pink')
 	# plt.subplot(4,1,3), plt.imshow(res2,cmap='pink')
 	# plt.subplot(4,1,4), plt.imshow(canny_edge,cmap='pink')
 	# plt.show()
-
+	canny_edge = ndi.rotate(canny_edge, 45, mode='constant')
 	white_coord = get_scar_coord(canny_edge)
 	x = white_coord[:,0]
 	y = white_coord[:,1]
