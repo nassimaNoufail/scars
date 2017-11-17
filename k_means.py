@@ -14,7 +14,7 @@ def main():
 	plt.subplot(4,1,3), plt.imshow(res2,cmap='pink')
 	plt.subplot(4,1,4), plt.imshow(canny_edge,cmap='pink')
 	plt.show()
-	canny_edge = ndi.rotate(canny_edge, 45, mode='constant')
+	canny_edge = ndi.rotate(canny_edge, -30, mode='constant')
 	white_coord = get_scar_coord(canny_edge)
 	x = white_coord[:,0]
 	y = white_coord[:,1]
@@ -31,7 +31,8 @@ def main():
 	# fig = plt.figure(figsize=(12, 6))
 	# mu, K = get_prior(alphaI)     #plotting proir
 	m, S = get_posterior(x, y, alphaI, betaI)  #update posterior
-
+	theta = np.arctan(m[1])
+	print('rotated ', (theta*(180/np.pi)), ' degrees')
 
 	xplot = [0, 650]
 	y1 = [0,0]
@@ -75,7 +76,7 @@ def pre_process(im):
 
 	# define criteria, number of clusters(K) and apply kmeans()
 	criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
-	K = 4   #number of clusters
+	K = 3   #number of clusters
 	ret,label,center=cv2.kmeans(Z,K,None,criteria,10,cv2.KMEANS_RANDOM_CENTERS)
 
 	#convert back into uint8, and make original image
