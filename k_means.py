@@ -19,8 +19,10 @@ def main():
 	x = white_coord[:,0]
 	y = white_coord[:,1]
 	fig = plt.figure()
-	ax1 = fig.add_subplot(2,1,1)
-	ax2 = fig.add_subplot(2,1,2)
+	ax1 = fig.add_subplot(3,1,1)
+	ax2 = fig.add_subplot(3,1,2)
+	ax3 = fig.add_subplot(3,1,3)
+
 	# plt.subplot(3,1,1), plt.imshow(canny_edge,cmap='pink')
 	# plt.subplot(3,1,2), plt.plot(white_coord[:,0], white_coord[:,1],'.')
 	ax1.imshow(canny_edge,cmap='pink')
@@ -31,8 +33,10 @@ def main():
 	# fig = plt.figure(figsize=(12, 6))
 	# mu, K = get_prior(alphaI)     #plotting proir
 	m, S = get_posterior(x, y, alphaI, betaI)  #update posterior
-	theta = np.arctan(m[1])
-	print('rotated ', (theta*(180/np.pi)), ' degrees')
+	theta_rad = np.arctan(m[1])
+	theta_deg = (theta_rad*(180/np.pi))
+	print('rotated ', theta_deg, ' degrees')
+
 
 	xplot = [0, 650]
 	y1 = [0,0]
@@ -40,6 +44,8 @@ def main():
 		y1[n] = m[1]*xplot[n] + m[0]
 	# plt.subplot(3,1,3),plt.plot(xplot,y1)
 	ax2.plot(xplot, y1, 'r')
+	rotated_im = ndi.rotate(canny_edge, -int(round(theta_deg)), mode='constant')
+	ax3.imshow(rotated_im,cmap='pink')
 	plt.show()
 
 def get_scar_coord(canny_edge):
