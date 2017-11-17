@@ -15,37 +15,40 @@ def main():
 	plt.subplot(4,1,4), plt.imshow(canny_edge,cmap='pink')
 	plt.show()
 	canny_edge = ndi.rotate(canny_edge, -30, mode='constant')
-	white_coord = get_scar_coord(canny_edge)
-	x = white_coord[:,0]
-	y = white_coord[:,1]
+
 	fig = plt.figure()
 	ax1 = fig.add_subplot(3,1,1)
 	ax2 = fig.add_subplot(3,1,2)
 	ax3 = fig.add_subplot(3,1,3)
 
-	# plt.subplot(3,1,1), plt.imshow(canny_edge,cmap='pink')
-	# plt.subplot(3,1,2), plt.plot(white_coord[:,0], white_coord[:,1],'.')
-	ax1.imshow(canny_edge,cmap='pink')
-	ax2.plot(x, y, '.')
+	horiz_im = auto_rotate(ax1, ax2, ax3, canny_edge)
+
+def auto_rotate(input_ax, line_ax, output_ax, canny_edge):
+	#convert image to co ordinated
+	white_coord = get_scar_coord(canny_edge)
+	#extract co ordinates
+	x = white_coord[:,0]
+	y = white_coord[:,1]
+	input_ax.imshow(canny_edge,cmap='pink')
+	line_ax.plot(x, y, '.')
 
 	alphaI = 2 * np.eye(2)       #covarance of prior
 	betaI = np.eye(2)              #variance of noise in data
-	# fig = plt.figure(figsize=(12, 6))
-	# mu, K = get_prior(alphaI)     #plotting proir
 	m, S = get_posterior(x, y, alphaI, betaI)  #update posterior
-	theta_rad = np.arctan(m[1])
-	theta_deg = (theta_rad*(180/np.pi))
+
+	theta_rad = np.arctan(m[1])     #find angle from gradient
+	theta_deg = (theta_rad*(180/np.pi))    #convert to degrees
 	print('rotated ', theta_deg, ' degrees')
 
-
+	#plot linear regression line
 	xplot = [0, 650]
 	y1 = [0,0]
 	for n in range(2):
 		y1[n] = m[1]*xplot[n] + m[0]
-	# plt.subplot(3,1,3),plt.plot(xplot,y1)
-	ax2.plot(xplot, y1, 'r')
+
+	line_ax.plot(xplot, y1, 'r')
 	rotated_im = ndi.rotate(canny_edge, -int(round(theta_deg)), mode='constant')
-	ax3.imshow(rotated_im,cmap='pink')
+	output_ax.imshow(rotated_im,cmap='pink')
 	plt.show()
 
 def get_scar_coord(canny_edge):
