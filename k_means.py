@@ -8,20 +8,32 @@ def main():
 	im = imread('test4c.jpg')
 	#rotate image - in degrees
 	# im = ndi.rotate(im, 45, mode='constant')
-	res2, canny_edge, img = pre_process(im)
+	imK, canny_edge, imR = pre_process(im)
+	mask = get_mask(imK, imR)
+	# masked = mask * imR
 	plt.subplot(4,1,1), plt.imshow(im,cmap='pink')
-	plt.subplot(4,1,2), plt.imshow(img,cmap='pink')
-	plt.subplot(4,1,3), plt.imshow(res2,cmap='pink')
-	plt.subplot(4,1,4), plt.imshow(canny_edge,cmap='pink')
+	plt.subplot(4,1,2), plt.imshow(imR,cmap='pink')
+	plt.subplot(4,1,3), plt.imshow(imK,cmap='pink')
+	plt.subplot(4,1,4), plt.imshow(mask,cmap='pink')
 	plt.show()
-	canny_edge = ndi.rotate(canny_edge, -30, mode='constant')
-
+	canny_edge = ndi.rotate(canny_edge, 20, mode='constant')
+	
 	fig = plt.figure()
 	ax1 = fig.add_subplot(3,1,1)
 	ax2 = fig.add_subplot(3,1,2)
 	ax3 = fig.add_subplot(3,1,3)
 
 	horiz_im = auto_rotate(ax1, ax2, ax3, canny_edge)
+
+def get_mask(imK, im_original):
+	min_val = np.amin(imK)
+	s = np.shape(imK)
+	mask = np.zeros(s)
+	for i in range(s[0]):
+		for j in range(s[1]):
+			if imK[i,j] == min_val:
+				mask[i,j] = im_original[i,j]
+	return mask
 
 def auto_rotate(input_ax, line_ax, output_ax, canny_edge):
 	#convert image to co ordinated
@@ -78,24 +90,24 @@ def get_scar_coord(canny_edge):
 
 def pre_process(im):
 
-	img = im[:,:,2]     #only red channel
-	Z = img.reshape((-1,3))
+	imR = im[:,:,2]     #only red channel
+	Z = imR.reshape((-1,3))
 	# convert to np.float32 as required from kmeans input
 	Z = np.float32(Z)
 
 	# define criteria, number of clusters(K) and apply kmeans()
 	criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
-	K = 3   #number of clusters
+	K = 2   #number of clusters
 	ret,label,center=cv2.kmeans(Z,K,None,criteria,10,cv2.KMEANS_RANDOM_CENTERS)
 
 	#convert back into uint8, and make original image
 	center = np.uint8(center)
 	res = center[label.flatten()]
-	res2 = res.reshape((img.shape))
+	imK = res.reshape((imR.shape))
 
 	#take canny edges of kmeans
-	canny_edge = cv2.Canny(res2,200,100)
-	return res2, canny_edge, img
+	canny_edge = cv2.Canny(imK,200,100)
+	return imK, canny_edge, imR
 
 ########################################
 #functions for Baysian linear regression
