@@ -5,7 +5,13 @@ from scipy.misc import imread
 from scipy import ndimage as ndi
 
 def main():
-	im = imread('test4c.jpg')
+	#take from command line
+	import sys
+	if len(sys.argv) == 1:
+		im = imread('test4c.jpg')
+	else:
+		im = imread(*sys.argv[1:])
+	
 	#rotate image - in degrees
 	# im = ndi.rotate(im, 45, mode='constant')
 	imK, canny_edge, imR = pre_process(im)
