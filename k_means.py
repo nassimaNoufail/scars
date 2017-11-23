@@ -11,11 +11,11 @@ def main():
 		im = imread('test4c.jpg')
 	else:
 		im = imread(*sys.argv[1:])
-	
+
 	#rotate image - in degrees
 	# im = ndi.rotate(im, 45, mode='constant')
-	imK, canny_edge, imR = pre_process(im)
-	mask = get_mask(imK, imR)
+	imK, canny_edge, imR = pre_process(im, K = 3)
+	mask, avg_intesity = get_mask(imK, imR)
 	# masked = mask * imR
 	plt.subplot(4,1,1), plt.imshow(im,cmap='pink')
 	plt.subplot(4,1,2), plt.imshow(imR,cmap='pink')
@@ -35,11 +35,22 @@ def get_mask(imK, im_original):
 	min_val = np.amin(imK)
 	s = np.shape(imK)
 	mask = np.zeros(s)
+	mask_count = 0
 	for i in range(s[0]):
 		for j in range(s[1]):
 			if imK[i,j] == min_val:
 				mask[i,j] = im_original[i,j]
-	return mask
+				mask_count += 1
+	mask_intesites = np.zeros(mask_count)
+	mask_count = 0
+	for i in range(s[0]):
+		for j in range(s[1]):
+			if imK[i,j] == min_val:
+				mask_intesites[mask_count] = im_original[i,j]
+				mask_count += 1
+	avg_intesity = int(np.round(np.mean(mask_intesites)))
+	print('average intentity is ', avg_intesity)
+	return mask, avg_intesity
 
 def auto_rotate(input_ax, line_ax, output_ax, canny_edge):
 	#convert image to co ordinated
@@ -94,7 +105,7 @@ def get_scar_coord(canny_edge):
 				ind += 1
 	return white_coord
 
-def pre_process(im):
+def pre_process(im, K):
 
 	imR = im[:,:,2]     #only red channel
 	Z = imR.reshape((-1,3))
@@ -103,7 +114,7 @@ def pre_process(im):
 
 	# define criteria, number of clusters(K) and apply kmeans()
 	criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
-	K = 2   #number of clusters
+	# K = 2   #number of clusters
 	ret,label,center=cv2.kmeans(Z,K,None,criteria,10,cv2.KMEANS_RANDOM_CENTERS)
 
 	#convert back into uint8, and make original image
