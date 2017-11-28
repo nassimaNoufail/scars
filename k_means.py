@@ -22,6 +22,15 @@ def main():
 	plt.subplot(4,1,3), plt.imshow(imK,cmap='pink')
 	plt.subplot(4,1,4), plt.imshow(mask,cmap='pink')
 	plt.show()
+
+	imL = np.copy(imK)
+	row_val, row_ind, scar_start, scar_length = get_row(imL)
+	print(row_val)
+	plt.subplot(1,1,1), plt.imshow(imK,cmap='pink')
+	row_correct = imK.shape[0] - row_ind
+	plt.plot([scar_start, scar_start+scar_length], [row_correct, row_correct],linewidth=5)
+	plt.show()
+
 	canny_edge = ndi.rotate(canny_edge, 20, mode='constant')
 	
 	fig = plt.figure()
@@ -30,6 +39,42 @@ def main():
 	ax3 = fig.add_subplot(3,1,3)
 
 	horiz_im = auto_rotate(ax1, ax2, ax3, canny_edge)
+
+def get_row(imBlack):
+	min_intensity = np.min(imBlack)
+	imBlack[imBlack!=min_intensity] = 0
+	imBlack[imBlack==min_intensity] = 1
+	rows = np.sum(imBlack, axis=1)
+	row_ind = np.argmax(rows)
+	row_val = np.max(rows)
+	count = -1
+	neighbouring = 0
+	white = 1
+	max_neighbouring = int(row_val/5)
+	while neighbouring < max_neighbouring:
+		count +=1
+		if imBlack[row_ind, count] == 1:
+			white = 0
+			while white == 0:
+				if imBlack[row_ind, count] == 1:
+					count += 1
+					neighbouring += 1
+					if neighbouring >= max_neighbouring:
+						break
+				else:
+					neighbouring = 0
+					white = 1
+	scar_start = count - max_neighbouring
+	white = 0
+	count = int(np.copy(scar_start))
+	scar_length = 0
+	while white == 0:
+		if imBlack[row_ind, count] == 1:
+			count += 1
+			scar_length += 1
+		else:
+			white = 1
+	return row_val, row_ind, scar_start, scar_length
 
 def get_mask(imK, im_original):
 	min_val = np.amin(imK)
@@ -108,7 +153,9 @@ def get_scar_coord(canny_edge):
 def pre_process(im, K):
 
 	imR = im[:,:,2]     #only red channel
-	Z = imR.reshape((-1,3))
+	imR = cv2.medianBlur(imR,5)
+	# Z = imR.reshape((-1,3))
+	Z = np.reshape(imR, (-1, 1))
 	# convert to np.float32 as required from kmeans input
 	Z = np.float32(Z)
 
