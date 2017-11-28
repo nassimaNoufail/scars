@@ -26,8 +26,11 @@ def main():
 	imL = np.copy(imK)
 	row_val, row_ind, scar_start, scar_length = get_row(imL)
 	print(row_val)
-	plt.subplot(1,1,1), plt.imshow(imK,cmap='pink')
+	plt.subplot(3,1,1), plt.imshow(imK,cmap='pink')
 	row_correct = imK.shape[0] - row_ind
+	plt.plot([scar_start, scar_start+scar_length], [row_correct, row_correct],linewidth=5)
+	plt.subplot(3,1,2), plt.imshow(im,cmap='pink')
+	plt.subplot(3,1,3), plt.imshow(im,cmap='pink')
 	plt.plot([scar_start, scar_start+scar_length], [row_correct, row_correct],linewidth=5)
 	plt.show()
 
