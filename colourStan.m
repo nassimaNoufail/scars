@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 %close all
 figure
 im= imread('cokeCan.jpg');
@@ -23,11 +24,19 @@ mim(1:f,:,:)=colour;
 mim(TR-f:TR,:,:)=colour;
 
 
+=======
+close all
+im= imread('cokeCan.jpg');
+trueColour=244;
+[TR,TC,lol]=size(im);
 
-n=nnz(mim(:,:,1));
+%figure
+%imshow(im)
+[im(150,150,1),im(150,150,2),im(150,150,3)]
+>>>>>>> 1b9d64bc4683aa67a622cb8392ceab57ea40535f
 
-[row,col]=find(mim(:,:,1),1);
 
+<<<<<<< HEAD
 myRow=163;
 myCol=146;
 for i=1:175-163
@@ -42,9 +51,19 @@ for i=1:TC
 end
 %}
 %[aa,bb]=find(differM);
+=======
+gim=redExtract(im,TR,TC);
+>>>>>>> 1b9d64bc4683aa67a622cb8392ceab57ea40535f
 
+total=nnz(gim(:,:,1));
+mean1=sum(sum(gim(:,:,1)))/total;
+mean2=sum(sum(gim(:,:,2)))/total;
+mean3=sum(sum(gim(:,:,3)))/total;
 
+%figure
+%imshow(gim)
 
+<<<<<<< HEAD
 gim=redExtract(im,TR,TC);
 
 subplot(2,2,2)%%%%%%%%%%
@@ -74,6 +93,11 @@ title('Final')
 
 
 
+=======
+gim(:,:,1)=gim(:,:,1)+(trueColour-mean1);
+%figure
+%imshow(gim)
+>>>>>>> 1b9d64bc4683aa67a622cb8392ceab57ea40535f
 function result=RGB(vec)
 vec=num2cell(vec);
 [R,G,B]=vec{:};%unpack
@@ -84,16 +108,26 @@ result=(R-G)*(R-B);
 end
 
 function image=redExtract(image,TR,TC)
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1b9d64bc4683aa67a622cb8392ceab57ea40535f
 for i=1:TR
     for j=1:TC
         differM(i,j)=RGB([image(i,j,1),image(i,j,2),image(i,j,3)]);
     end
 end
+<<<<<<< HEAD
 
 for i=1:TR
     for j=1:TC
         if differM(i,j)>12000
+=======
+%[aa,bb]=find(differM);
+for i=1:TR
+    for j=1:TC
+        if differM(i,j)>10000
+>>>>>>> 1b9d64bc4683aa67a622cb8392ceab57ea40535f
         	lol=0;
         else
             image(i,j,:)=0;
