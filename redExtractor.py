@@ -5,8 +5,11 @@ from scipy.misc import imread
 
 
 
-def main():
+def main(importedImage):
 
+    
+    
+    img = cv2.imread(importedImage)
     imageArray=['cokeCan.jpg',
                 'Test_data/47/47_3.png','54_UF_TW_SMALL.jpg']
     imageNb=len(imageArray)
@@ -38,26 +41,31 @@ def main():
         plt.imshow(redImg)
     '''
     
-    img=cv2.imread(imageArray[1])
     
+    #Plots the original image:
+    '''    
     cv2.namedWindow('original',cv2.WINDOW_NORMAL)
     cv2.resizeWindow('original', windowSize,windowSize)
     cv2.imshow('original',img)
+    '''
     TR,TC,unused=np.shape(img)
     redImg=redExtract(img,TR,TC)
     
     
     
-    
+    #Plots the image with only red:
+    '''    
     cv2.namedWindow('red extracted',cv2.WINDOW_NORMAL)
     cv2.resizeWindow('red extracted', windowSize,windowSize)
     cv2.imshow('red extracted',redImg)
-    
+    '''
     
     total=np.count_nonzero(redImg[:,:,2])
     
-    mean0=np.sum(redImg[:,:,0])/total  #  mean of red pixels
+    mean0=np.sum(redImg[:,:,2])/total  #  mean of red pixels
     
+    #Plots image with increased red
+    '''
     for i in range(0,TR):
         for j in range(0,TC):
             if redImg[i,j,2]!=0:
@@ -70,9 +78,13 @@ def main():
     cv2.namedWindow('red increased',cv2.WINDOW_NORMAL)
     cv2.resizeWindow('red increased', windowSize,windowSize)
     cv2.imshow('red increased',redImg)
-    meanFinal=np.sum(redImg[:,:,2])/total
-    print('meanfinal=',meanFinal)
+    '''
     
+    meanFinal=np.sum(redImg[:,:,2])/total
+                    
+    differenceInRed=trueColour-mean0
+    
+    return differenceInRed
 
 def redExtract(image,TR,TC):
     differM=np.zeros([TR,TC])
