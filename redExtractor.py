@@ -10,6 +10,11 @@ def main():
     imageArray=['cokeCan.jpg',
                 'Test_data/47/47_3.png','54_UF_TW_SMALL.jpg']
     imageNb=len(imageArray)
+    
+    trueColour=244
+    windowSize=400
+    
+    #plot originals in subplot
     '''
     for i in range(0,imageNb):
         myPlot1=plt.subplot(1,2,i+1)
@@ -19,8 +24,9 @@ def main():
     '''    
       
 
-    trueColour=244
     
+    
+    #plot red extracted in subplot
     '''
     for i in range(0,imageNb):
         img=plt.imread(imageArray[i])
@@ -31,32 +37,40 @@ def main():
         myPlot2.axis('off') 
         plt.imshow(redImg)
     '''
-    plt.figure(0)
-    img=plt.imread(imageArray[2])
+    
+    img=cv2.imread(imageArray[1])
+    
+    cv2.namedWindow('original',cv2.WINDOW_NORMAL)
+    cv2.resizeWindow('original', windowSize,windowSize)
+    cv2.imshow('original',img)
     TR,TC,unused=np.shape(img)
     redImg=redExtract(img,TR,TC)
     
-    plt.subplot(1,2,1), plt.imshow(plt.imread(imageArray[2]))#### replace with img to see error
-    plt.axis('off') 
     
-    plt.subplot(1,2,2), plt.imshow(redImg)
-    plt.axis('off')
     
-    total=np.count_nonzero(redImg[:,:,0])
+    
+    cv2.namedWindow('red extracted',cv2.WINDOW_NORMAL)
+    cv2.resizeWindow('red extracted', windowSize,windowSize)
+    cv2.imshow('red extracted',redImg)
+    
+    
+    total=np.count_nonzero(redImg[:,:,2])
     
     mean0=np.sum(redImg[:,:,0])/total  #  mean of red pixels
     
     for i in range(0,TR):
         for j in range(0,TC):
-            if redImg[i,j,0]!=0:
-                if redImg[i,j,0]+(trueColour-mean0)>255:
-                    redImg[i,j,0]=255
+            if redImg[i,j,2]!=0:
+                if redImg[i,j,2]+(trueColour-mean0)>255:
+                    redImg[i,j,2]=255
                 else:
-                    redImg[i,j,0]+=(trueColour-mean0)     
+                    redImg[i,j,2]+=(trueColour-mean0)     
                       
-    plt.figure(1)
-    plt.imshow(redImg)
-    meanFinal=np.sum(redImg[:,:,0])/total
+    
+    cv2.namedWindow('red increased',cv2.WINDOW_NORMAL)
+    cv2.resizeWindow('red increased', windowSize,windowSize)
+    cv2.imshow('red increased',redImg)
+    meanFinal=np.sum(redImg[:,:,2])/total
     print('meanfinal=',meanFinal)
     
 
@@ -64,7 +78,7 @@ def redExtract(image,TR,TC):
     differM=np.zeros([TR,TC])
     for i in range(0,TR):
         for j in range(0,TC):
-            differM[i,j]=RGB([int(image[i,j,0]),int(image[i,j,1]),int(image[i,j,2])])
+            differM[i,j]=RGB([int(image[i,j,2]),int(image[i,j,1]),int(image[i,j,0])])
             
     for i in range(0,TR):
         for j in range(0,TC):
