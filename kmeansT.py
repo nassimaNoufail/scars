@@ -4,49 +4,52 @@ import matplotlib.pyplot as plt
 from scipy.misc import imread
 from scipy import ndimage as ndi
 
-def main(importedImage):
+def main():
 	#take from command line
-	im = imread(importedImage)
+	im = imread('Test_data/47/47_3.png')
 
 	#rotate image - in degrees
-	# im = ndi.rotate(im, 45, mode='constant')
+	#im = ndi.rotate(im, 45, mode='constant')
 	K = 3
 	imK, canny_edge, imR = pre_process(im, K, type = 0)
 	mask, avg_intesity = get_mask(imK, imR)
-	# masked = mask * imR
-	plt.subplot(4,1,1), plt.imshow(im,cmap='pink')
-	plt.subplot(4,1,2), plt.imshow(imR,cmap='pink')
-	plt.subplot(4,1,3), plt.imshow(imK,cmap='pink')
-	plt.subplot(4,1,4), plt.imshow(mask,cmap='pink')
-	plt.show()
-
-	# canny_edge = ndi.rotate(canny_edge, 20, mode='constant')
+	masked = mask * imR
+   #''' 
+	#plt.subplot(4,1,1), plt.imshow(im,cmap='pink')
+	#plt.subplot(4,1,2), plt.imshow(imR,cmap='pink')
+	#plt.subplot(4,1,3), plt.imshow(imK,cmap='pink')
+	#plt.subplot(4,1,4), plt.imshow(mask,cmap='pink')
+	#plt.show()
+   #'''
+	canny_edge = ndi.rotate(canny_edge, 20, mode='constant')
+   #'''
 	fig = plt.figure()
 	ax1 = fig.add_subplot(3,1,1)
 	ax2 = fig.add_subplot(3,1,2)
 	ax3 = fig.add_subplot(3,1,3)
+   #'''
 	theta_deg = auto_rotate(ax1, ax2, ax3, canny_edge)
 
 	horiz_im = ndi.rotate(imK, -int(round(theta_deg)), mode='nearest',cval=255)
 	horiz_im = pre_process(horiz_im, K, type = 1)
 	horiz_orig_im = ndi.rotate(im, -int(round(theta_deg)), mode='constant',cval=255)
-
-	plt.subplot(2,1,1), plt.imshow(imK,cmap='pink')
-	plt.subplot(2,1,2), plt.imshow(horiz_im,cmap='pink')
-	plt.show()
-
+   #'''
+	#plt.subplot(2,1,1), plt.imshow(imK,cmap='pink')
+	#plt.subplot(2,1,2), plt.imshow(horiz_im,cmap='pink')
+	#plt.show()
+   # '''
 	imL = np.copy(horiz_im)
 
 	row_val, row_ind, scar_start, scar_length = get_row(imL)
-	print('pixel length is ', row_val)
+	#print('pixel length is ', row_val)
 
-	plt.subplot(3,1,1), plt.imshow(horiz_im,cmap='pink')
+	#plt.subplot(3,1,1), plt.imshow(horiz_im,cmap='pink')
 	row_correct = imK.shape[0] - row_ind
-	plt.plot([scar_start, scar_start+scar_length], [row_ind, row_ind],linewidth=5)
-	plt.subplot(3,1,2), plt.imshow(horiz_orig_im,cmap='pink')
-	plt.subplot(3,1,3), plt.imshow(horiz_orig_im,cmap='pink')
-	plt.plot([scar_start, scar_start+scar_length], [row_ind, row_ind],linewidth=5)
-	plt.show()
+	#plt.plot([scar_start, scar_start+scar_length], [row_ind, row_ind],linewidth=5)
+	#plt.subplot(3,1,2), plt.imshow(horiz_orig_im,cmap='pink')
+	#plt.subplot(3,1,3), plt.imshow(horiz_orig_im,cmap='pink')
+	#plt.plot([scar_start, scar_start+scar_length], [row_ind, row_ind],linewidth=5)
+	#plt.show()
 
 def get_row(imBlack):
 	min_intensity = np.min(imBlack)
@@ -102,7 +105,7 @@ def get_mask(imK, im_original):
 				mask_intesites[mask_count] = im_original[i,j]
 				mask_count += 1
 	avg_intesity = int(np.round(np.mean(mask_intesites)))
-	print('average intentity is ', avg_intesity)
+	#print('average intentity is ', avg_intesity)
 	return mask, avg_intesity
 
 def auto_rotate(input_ax, line_ax, output_ax, canny_edge):
@@ -120,7 +123,7 @@ def auto_rotate(input_ax, line_ax, output_ax, canny_edge):
 
 	theta_rad = np.arctan(m[1])     #find angle from gradient
 	theta_deg = (theta_rad*(180/np.pi))    #convert to degrees
-	print('rotated ', theta_deg, ' degrees')
+	#print('rotated ', theta_deg, ' degrees')
 
 	#plot linear regression line
 	xplot = [0, 650]
@@ -130,8 +133,8 @@ def auto_rotate(input_ax, line_ax, output_ax, canny_edge):
 
 	line_ax.plot(xplot, y1, 'r')
 	rotated_im = ndi.rotate(canny_edge, -int(round(theta_deg)), mode='constant',cval=255)
-	output_ax.imshow(rotated_im,cmap='pink')
-	plt.show()
+	#output_ax.imshow(rotated_im,cmap='pink')
+	#plt.show()
 
 	return theta_deg
 

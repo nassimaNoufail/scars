@@ -15,25 +15,28 @@ from os import walk
 
 def main():
     
-    import sys
+    #import sys
     #Folder of cropped images
-    lambdaFolder=*sys.argv[1]
-    scarFolder=*sys.argv[2]
-    cokeFolder=*sys.argv[3]
-    stickerFolder=*sys.argv[4]
+    lambdaFolder='Test_data/47'
+    #scarFolder=*sys.argv[1]
+    #cokeFolder=*sys.argv[2]
+    #stickerFolder=*sys.argv[3]
+    
     
     f = []
     for (dirpath, dirnames, filenames) in walk(lambdaFolder): #value that should be used: 'Test_data/47'
         f.extend(filenames)
         break
+    #print(f)
+    #print(lambdaFolder+'/'+f[0])
+    folderLength=len(f)
     
-    folderLength=len(scarFolder)
-    
+    Final=np.ones([1,folderLength])
     for i in range(0,folderLength):
-        a=kmeansT.main(scarFolder[i])
-        b=redExtractor.main(cokeFolder[i])
-        Final[i]=[a,b]
-    
+        #a=kmeansT.main(lambdaFolder+'/'+f[i])
+        b=redExtractor.main(lambdaFolder+'/'+f[i])
+        Final[0,i]=b
+    print(Final)
     
 
     
