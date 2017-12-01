@@ -4,9 +4,9 @@ import matplotlib.pyplot as plt
 from scipy.misc import imread
 from scipy import ndimage as ndi
 
-def main():
+def main(file):
 	#take from command line
-	im = imread('Test_data/47/47_3.png')
+	im = imread(file)
 
 	#rotate image - in degrees
 	#im = ndi.rotate(im, 45, mode='constant')
@@ -50,6 +50,7 @@ def main():
 	#plt.subplot(3,1,3), plt.imshow(horiz_orig_im,cmap='pink')
 	#plt.plot([scar_start, scar_start+scar_length], [row_ind, row_ind],linewidth=5)
 	#plt.show()
+	return scar_length, avg_intesity
 
 def get_row(imBlack):
 	min_intensity = np.min(imBlack)
