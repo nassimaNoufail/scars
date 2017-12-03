@@ -84,7 +84,7 @@ def main(img):
                     
     differenceInRed=trueColour-mean0
     
-    return differenceInRed
+    return round(differenceInRed)
 
 def redExtract(image,TR,TC):
     differM=np.zeros([TR,TC])
