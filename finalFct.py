@@ -6,6 +6,7 @@ from scipy import ndimage as ndi
 import redExtractor 
 from os import walk
 import kmeansT
+import get_feature
 np.set_printoptions(threshold=np.inf)
 
 
@@ -43,17 +44,23 @@ def main():
     
     folderLength=len(scar)
     
-    Final=np.ones([1,folderLength])
+    Final=np.ones([folderLength,3])
     
     for i in range(0,folderLength):
+        im=imread(scarFolder+scar[i])
         #scar_lenght_pixels, scar_avg_intensity = kmeansT.main(scarFolder+f[i])
-        red_diff = redExtractor.main(canFolder+can[i])
+        length=get_feature.length(im)
+        avg_red = get_feature.red(im)
+        red_diff = redExtractor.main(cv2.imread(canFolder+can[i]))
         #circle_lenght_pixels, circle_avg_intensity = kmeansT.main(circleFolder+f[i])
-        Final[0,i]=red_diff
+        Final[i,0]=length
+        Final[i,1]=avg_red
+        Final[i,2]=red_diff
 
         #pixels_1mm_circle = circle_lenght_pixels/20
         #actual_length_circle_mm = pixels_1mm_circle*scar_lenght_pixels
-
+    
+    
     print(Final)
     
 

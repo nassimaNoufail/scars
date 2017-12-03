@@ -5,11 +5,11 @@ from scipy.misc import imread
 
 
 
-def main(importedImage):
+def main(img):
 
     
     
-    img = cv2.imread(importedImage) # 'can/14.png' is a good example
+     # 'can/14.png' is a good example of image
     imageArray=['cokeCan.jpg',
                 'Test_data/47/47_3.png','54_UF_TW_SMALL.jpg']
     imageNb=len(imageArray)
