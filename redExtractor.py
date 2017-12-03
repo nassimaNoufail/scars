@@ -9,7 +9,7 @@ def main(importedImage):
 
     
     
-    img = cv2.imread(importedImage)
+    img = cv2.imread(importedImage) # 'can/14.png' is a good example
     imageArray=['cokeCan.jpg',
                 'Test_data/47/47_3.png','54_UF_TW_SMALL.jpg']
     imageNb=len(imageArray)
