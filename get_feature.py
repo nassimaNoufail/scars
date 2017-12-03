@@ -4,54 +4,42 @@ import matplotlib.pyplot as plt
 from scipy.misc import imread
 from scipy import ndimage as ndi
 import os
-
-def main():
-	#take from command line
-	import sys
-	if len(sys.argv) == 1:
-		im = imread('test4c.jpg')
-	else:
-		im = imread(*sys.argv[1:])
-
-	#rotate image - in degrees
-	# im = ndi.rotate(im, 45, mode='constant')
-	K = 10
+def length(im):
+	# Script_Run = np.load('ScriptRun.npy')
+	# Script_Run = Script_Run+1
+	# np.save('ScriptRun.npy',Script_Run)
+	K = 3
 	imK, canny_edge, imR = pre_process(im, K, type = 0)
-	mask, avg_intesity = get_mask(imK, imR)
-	# masked = mask * imR
-	plt.subplot(4,1,1), plt.imshow(im,cmap='pink')
-	plt.subplot(4,1,2), plt.imshow(imR,cmap='pink')
-	plt.subplot(4,1,3), plt.imshow(imK,cmap='pink')
-	plt.subplot(4,1,4), plt.imshow(mask,cmap='pink')
-	plt.show()
-
-	# canny_edge = ndi.rotate(canny_edge, 20, mode='constant')
-	fig = plt.figure()
-	ax1 = fig.add_subplot(3,1,1)
-	ax2 = fig.add_subplot(3,1,2)
-	ax3 = fig.add_subplot(3,1,3)
-	theta_deg = auto_rotate(ax1, ax2, ax3, canny_edge)
-
+	theta_deg = auto_rotate(canny_edge)
 	horiz_im = ndi.rotate(imK, -int(round(theta_deg)), mode='nearest',cval=255)
 	horiz_im = pre_process(horiz_im, K, type = 1)
-	horiz_orig_im = ndi.rotate(im, -int(round(theta_deg)), mode='constant',cval=255)
-
-	plt.subplot(2,1,1), plt.imshow(imK,cmap='pink')
-	plt.subplot(2,1,2), plt.imshow(horiz_im,cmap='pink')
-	plt.show()
-
 	imL = np.copy(horiz_im)
-
 	row_val, row_ind, scar_start, scar_length = get_row(imL)
-	print('pixel length is ', row_val)
 
-	plt.subplot(3,1,1), plt.imshow(horiz_im,cmap='pink')
-	row_correct = imK.shape[0] - row_ind
-	plt.plot([scar_start, scar_start+scar_length], [row_ind, row_ind],linewidth=5)
-	plt.subplot(3,1,2), plt.imshow(horiz_orig_im,cmap='pink')
-	plt.subplot(3,1,3), plt.imshow(horiz_orig_im,cmap='pink')
-	plt.plot([scar_start, scar_start+scar_length], [row_ind, row_ind],linewidth=5)
-	plt.show()
+	# horiz_orig_im = ndi.rotate(im, -int(round(theta_deg)), mode='constant',cval=255)
+	# plt.imshow(horiz_orig_im)
+	# plt.imshow(horiz_orig_im,cmap='pink')
+	# plt.plot([scar_start, scar_start+scar_length], [row_ind, row_ind],linewidth=3)
+	# plt.show()
+	# plt.savefig(scar_num +' length' + str(Script_Run) + '.png')
+	# plt.close()
+
+	return scar_length
+
+def red(im):
+	# Script_Run = np.load('ScriptRun.npy')
+	# Script_Run = Script_Run+1
+	# np.save('ScriptRun.npy',Script_Run)
+	K = 3
+	imK, canny_edge, imR = pre_process(im, K, type = 0)
+	mask, avg_intesity = get_mask(imK, imR)
+
+	# plt.imshow(imK,cmap = 'gray')
+	# plt.show()
+	# plt.savefig(scar_num +' red' + str(Script_Run) + '.png')
+	# plt.close()
+
+	return avg_intesity
 
 def get_row(imBlack):
 	min_intensity = np.min(imBlack)
@@ -107,37 +95,20 @@ def get_mask(imK, im_original):
 				mask_intesites[mask_count] = im_original[i,j]
 				mask_count += 1
 	avg_intesity = int(np.round(np.mean(mask_intesites)))
-	print('average intentity is ', avg_intesity)
 	return mask, avg_intesity
 
-def auto_rotate(input_ax, line_ax, output_ax, canny_edge):
+def auto_rotate(canny_edge):
 	#convert image to co ordinated
 	white_coord = get_scar_coord(canny_edge)
 	#extract co ordinates
 	x = white_coord[:,0]
 	y = white_coord[:,1]
-	input_ax.imshow(canny_edge,cmap='pink')
-	line_ax.plot(x, y, '.')
-
 	alphaI = 2 * np.eye(2)       #covarance of prior
 	betaI = np.eye(2)              #variance of noise in data
 	m, S = get_posterior(x, y, alphaI, betaI)  #update posterior
-
 	theta_rad = np.arctan(m[1])     #find angle from gradient
 	theta_deg = (theta_rad*(180/np.pi))    #convert to degrees
-	print('rotated ', theta_deg, ' degrees')
-
-	#plot linear regression line
-	xplot = [0, 650]
-	y1 = [0,0]
-	for n in range(2):
-		y1[n] = m[1]*xplot[n] + m[0]
-
-	line_ax.plot(xplot, y1, 'r')
 	rotated_im = ndi.rotate(canny_edge, -int(round(theta_deg)), mode='constant',cval=255)
-	output_ax.imshow(rotated_im,cmap='pink')
-	plt.show()
-
 	return theta_deg
 
 def get_scar_coord(canny_edge):
@@ -154,7 +125,6 @@ def get_scar_coord(canny_edge):
 				white_pix += 1
 			else:
 				canny_bin[i,j] = 0
-
 	white_coord = np.zeros([white_pix,2])   #initilse ammount of white pixels
 	ind = 0
 	white_len = len(white_coord)
@@ -230,10 +200,3 @@ def get_posterior(x, y, alphaI, betaI):
 	m = np.dot(first, second)
 	
 	return m, sInv
-
-if __name__ == "__main__":
-    main()
-
-
-
-
