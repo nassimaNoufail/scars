@@ -50,20 +50,22 @@ def main():
         finalScar=imread(scarFolder+scar[i])
         finalSticker=imread(stickerFolder+sticker[i])
         #scar_lenght_pixels, scar_avg_intensity = kmeansT.main(scarFolder+f[i])
-        length=get_feature.length(finalScar)
+        scar_length_pixels = get_feature.length(finalScar)
         avg_red = get_feature.red(finalScar)
-        red_diff_can = redExtractor.main('can',cv2.imread(canFolder+can[i]))
-        red_diff_sticker = redExtractor.main('sticker',cv2.imread(stickerFolder+sticker[i]))
+        red_diff_can, red_img_can = redExtractor.main('can',cv2.imread(canFolder+can[i]))
+        red_diff_sticker, red_img_stic = redExtractor.main('sticker',cv2.imread(stickerFolder+sticker[i]))
+        circle_length_pixels = get_feature.length(red_img_stic)
         #circle_lenght_pixels, circle_avg_intensity = kmeansT.main(circleFolder+f[i])
-        Final[i,0]=length
+        Final[i,0]=scar_length_pixels
         Final[i,1]=avg_red
         Final[i,2]=red_diff_can
         Final[i,3]=red_diff_sticker
-        #pixels_1mm_circle = circle_lenght_pixels/20
-        #actual_length_circle_mm = pixels_1mm_circle*scar_lenght_pixels
+        pixels_1mm_circle = circle_length_pixels/20
+        actual_length_circle_mm = pixels_1mm_circle*scar_length_pixels
+        print(actual_length_circle_mm)
     
     
-    print('Scar length, Scar Red, can red difference, sticker red difference',Final)
+    print('Scar length, Scar Red, can red difference, sticker red difference \n',Final)
     
 
     

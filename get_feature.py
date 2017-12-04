@@ -137,7 +137,10 @@ def get_scar_coord(canny_edge):
 
 def pre_process(im, K, type):
 	if type == 0:
-		imR = im[:,:,2]     #only red channel
+		if np.size(im.shape) == 3:
+			imR = im[:,:,2]     #only red channel
+		else:
+			imR = im
 		imR = cv2.medianBlur(imR,5)
 		# Z = imR.reshape((-1,3))
 		Z = np.reshape(imR, (-1, 1))
