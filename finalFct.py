@@ -8,8 +8,8 @@ from os import walk
 import kmeansT
 import get_feature
 np.set_printoptions(threshold=np.inf)
-
-
+from tqdm import tqdm
+import os
 
 
 
@@ -28,6 +28,7 @@ def main():
     scarFolder='scar/'
     canFolder='can/'
     
+    scarFolder='51/scar/'
     
     scar = []
     for (dirpath, dirnames, filenames) in walk(scarFolder): #value that should be used: 'folderName'
@@ -45,25 +46,32 @@ def main():
     folderLength=len(scar)
     
     Final=np.ones([folderLength,4])
-    
-    for i in range(0,folderLength):
+
+    Script_Run = np.load('ScriptRun.npy')    #for saving purposes
+    Script_Run = Script_Run+1
+    np.save('ScriptRun.npy',Script_Run)
+    # os.makedirs('auto_length/'+str(scar_length)+'_run' + str(Script_Run))
+    os.makedirs('Output' + str(Script_Run))
+
+    for i in tqdm(range(0,folderLength)):
         finalScar=imread(scarFolder+scar[i])
-        finalSticker=imread(stickerFolder+sticker[i])
+        # finalSticker=imread(stickerFolder+sticker[i])
         #scar_lenght_pixels, scar_avg_intensity = kmeansT.main(scarFolder+f[i])
-        length=get_feature.length(finalScar)
-        avg_red = get_feature.red(finalScar)
-        red_diff_can = redExtractor.main('can',cv2.imread(canFolder+can[i]))
-        red_diff_sticker = redExtractor.main('sticker',cv2.imread(stickerFolder+sticker[i]))
+        if i == 7:
+            length=get_feature.length(finalScar, Script_Run, i)
+        # avg_red = get_feature.red(finalScar)
+        # red_diff_can = redExtractor.main('can',cv2.imread(canFolder+can[i]))
+        # red_diff_sticker = redExtractor.main('sticker',cv2.imread(stickerFolder+sticker[i]))
         #circle_lenght_pixels, circle_avg_intensity = kmeansT.main(circleFolder+f[i])
-        Final[i,0]=length
-        Final[i,1]=avg_red
-        Final[i,2]=red_diff_can
-        Final[i,3]=red_diff_sticker
+        # Final[i,0]=length
+        # Final[i,1]=avg_red
+        # Final[i,2]=red_diff_can
+        # Final[i,3]=red_diff_sticker
         #pixels_1mm_circle = circle_lenght_pixels/20
         #actual_length_circle_mm = pixels_1mm_circle*scar_lenght_pixels
     
     
-    print('Scar length, Scar Red, can red difference, sticker red difference',Final)
+    # print('Scar length, Scar Red, can red difference, sticker red difference',Final)
     
 
     
@@ -72,6 +80,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 

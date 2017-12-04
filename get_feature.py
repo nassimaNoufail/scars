@@ -2,25 +2,32 @@ import numpy as np
 import cv2
 import matplotlib.pyplot as plt
 from scipy.misc import imread
+import scipy.misc
+
 from scipy import ndimage as ndi
 import os
-def length(im):
-	# Script_Run = np.load('ScriptRun.npy')
-	# Script_Run = Script_Run+1
-	# np.save('ScriptRun.npy',Script_Run)
+def length(im, Script_Run, i):
 	K = 3
-	imK, canny_edge, imR, canny_edgeK = pre_process(im, K, type = 0)
+	imK, canny_edge, imR, canny_edgeK,imC = pre_process(im, K, type = 0)
 	theta_deg = auto_rotate(canny_edgeK)
 	horiz_im = ndi.rotate(imK, -int(round(theta_deg)), mode='nearest',cval=255)
 	horiz_im = pre_process(horiz_im, K, type = 1)
 	imL = np.copy(horiz_im)
 	row_val, row_ind, scar_start, scar_length = get_row(imL)
-	# horiz_orig_im = ndi.rotate(im, -int(round(theta_deg)), mode='constant',cval=255)
-	# plt.imshow(horiz_orig_im)
-	# plt.imshow(horiz_orig_im,cmap='pink')
-	# plt.plot([scar_start, scar_start+scar_length], [row_ind, row_ind],linewidth=3)
+	horiz_orig_im = ndi.rotate(im, -int(round(theta_deg)), mode='constant',cval=255)
+
+	#saving image with length detected
+	# ax1 = plt.subplot(1,3,1)
+	# ax2 = plt.subplot(1,3,2)
+	# ax3 = plt.subplot(1,3,3)
+
+	scipy.misc.imsave('outfile.png', imC)
+	# ax1.imshow(imK)
+	# ax2.imshow(canny_edgeK)
+	# ax3.imshow(horiz_orig_im,cmap='pink')
+	# ax3.plot([scar_start, scar_start+scar_length], [row_ind, row_ind],linewidth=3)
 	# plt.show()
-	# plt.savefig(scar_num +' length' + str(Script_Run) + '.png')
+	# plt.savefig('Output' + str(Script_Run) + '/image_' + str((i+1)))
 	# plt.close()
 
 	return scar_length
@@ -114,7 +121,6 @@ def get_scar_coord(canny_edge):
 	#convert to a binary image
 	s = np.shape(canny_edge)
 	canny_bin = canny_edge.copy()
-	plt.imshow(canny_edge)
 	canny_mag = np.amax(canny_bin)
 	canny_bin = (canny_bin/canny_mag)*255    #scale image to 255
 	white_pix = 0     #initilise count for number of white pixels
@@ -161,7 +167,7 @@ def pre_process(im, K, type):
 		imC[imC!=low] = 255
 
 		canny_edgeK = cv2.Canny(imC,200,100)
-		return imK, canny_edge, imR, canny_edgeK
+		return imK, canny_edge, imR, canny_edgeK, imC
 	if type == 1:
 		Z = np.reshape(im, (-1, 1))
 		# convert to np.float32 as required from kmeans input
