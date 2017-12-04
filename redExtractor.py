@@ -5,41 +5,21 @@ from scipy.misc import imread
 
 
 
-def main(img):
+def main(choice,img):#choice,img
 
     
+    #cv2.imread('sticker/19.png') # 'can/14.png' is a good example of image
+    #choice='sticker'
     
-     # 'can/14.png' is a good example of image
-    imageArray=['cokeCan.jpg',
-                'Test_data/47/47_3.png','54_UF_TW_SMALL.jpg']
-    imageNb=len(imageArray)
     
-    trueColour=244
+    if choice =='can':
+        trueColour=244
+    elif choice =='sticker':
+        trueColour=255 #don't really know what to put, to be discussed   
+    
     windowSize=400
     
-    #plot originals in subplot
-    '''
-    for i in range(0,imageNb):
-        myPlot1=plt.subplot(1,2,i+1)
-        myPlot1.axis('off') 
-        img=plt.imread(imageArray[i])
-        plt.imshow(img)
-    '''    
-      
-
     
-    
-    #plot red extracted in subplot
-    '''
-    for i in range(0,imageNb):
-        img=plt.imread(imageArray[i])
-        TR,TC,unused=np.shape(img)
-        redImg=redExtract(img,TR,TC)
-        
-        myPlot2=plt.subplot(1,2,i+1)
-        myPlot2.axis('off') 
-        plt.imshow(redImg)
-    '''
     
     
     #Plots the original image:
@@ -48,6 +28,7 @@ def main(img):
     cv2.resizeWindow('original', windowSize,windowSize)
     cv2.imshow('original',img)
     '''
+    
     TR,TC,unused=np.shape(img)
     redImg=redExtract(img,TR,TC)
     
@@ -88,6 +69,7 @@ def main(img):
 
 def redExtract(image,TR,TC):
     differM=np.zeros([TR,TC])
+    
     for i in range(0,TR):
         for j in range(0,TC):
             differM[i,j]=RGB([int(image[i,j,2]),int(image[i,j,1]),int(image[i,j,0])])
@@ -96,11 +78,16 @@ def redExtract(image,TR,TC):
         for j in range(0,TC):
             if differM[i,j]<9000:
                 image[i,j,:]=0
+            
+        
     return image    
               
 def RGB(vec):
     R,G,B=vec
-    result=(R-G)*(R-B)
+    if R-G<0 or R-B<0:
+        result=-abs((R-G)*(R-B))   #this corrects the problem where both were negative hence result was positive
+    else:
+        result=(R-G)*(R-B)
     return result
 
 if __name__ == "__main__":
