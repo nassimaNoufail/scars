@@ -8,7 +8,7 @@ from os import walk
 import kmeansT
 import get_feature
 np.set_printoptions(threshold=np.inf)
-
+from tqdm import tqdm
 
 
 
@@ -24,9 +24,9 @@ def main():
     #cokeFolder=*sys.argv[2]
     
 
-    stickerFolder='sticker/'
-    scarFolder='scar/'
-    canFolder='can/'
+    stickerFolder='47/sticker/'
+    scarFolder='47/scar/'
+    canFolder='47/can/'
     
     
     scar = []
@@ -46,7 +46,7 @@ def main():
     
     Final=np.ones([folderLength,4])
     
-    for i in range(0,folderLength):
+    for i in tqdm(range(0,folderLength)):
         finalScar=imread(scarFolder+scar[i])
         finalSticker=imread(stickerFolder+sticker[i])
         #scar_lenght_pixels, scar_avg_intensity = kmeansT.main(scarFolder+f[i])
