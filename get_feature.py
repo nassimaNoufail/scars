@@ -6,8 +6,8 @@ import scipy.misc
 
 from scipy import ndimage as ndi
 import os
-def length(im, Script_Run, i):
-	K = 3
+def length(im, Script_Run, i, K):
+	# K = 3
 	imK, canny_edge, imR, canny_edgeK,imC = pre_process(im, K, type = 0)
 	theta_deg = auto_rotate(canny_edgeK)
 	horiz_im = ndi.rotate(imK, -int(round(theta_deg)), mode='nearest',cval=255)
@@ -17,18 +17,18 @@ def length(im, Script_Run, i):
 	horiz_orig_im = ndi.rotate(im, -int(round(theta_deg)), mode='constant',cval=255)
 
 	#saving image with length detected
-	# ax1 = plt.subplot(1,3,1)
-	# ax2 = plt.subplot(1,3,2)
-	# ax3 = plt.subplot(1,3,3)
+	ax1 = plt.subplot(1,3,1)
+	ax2 = plt.subplot(1,3,2)
+	ax3 = plt.subplot(1,3,3)
 
-	scipy.misc.imsave('outfile.png', imC)
-	# ax1.imshow(imK)
-	# ax2.imshow(canny_edgeK)
-	# ax3.imshow(horiz_orig_im,cmap='pink')
-	# ax3.plot([scar_start, scar_start+scar_length], [row_ind, row_ind],linewidth=3)
+	# scipy.misc.imsave('outfile.png', imC)
+	ax1.imshow(imK)
+	ax2.imshow(canny_edgeK)
+	ax3.imshow(horiz_orig_im,cmap='pink')
+	ax3.plot([scar_start, scar_start+scar_length], [row_ind, row_ind],linewidth=3)
 	# plt.show()
-	# plt.savefig('Output' + str(Script_Run) + '/image_' + str((i+1)))
-	# plt.close()
+	plt.savefig('Output' + str(Script_Run) + '/image_' + str((i+1)))
+	plt.close()
 
 	return scar_length
 
