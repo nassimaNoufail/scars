@@ -9,13 +9,12 @@ def length(im):
 	# Script_Run = Script_Run+1
 	# np.save('ScriptRun.npy',Script_Run)
 	K = 3
-	imK, canny_edge, imR = pre_process(im, K, type = 0)
-	theta_deg = auto_rotate(canny_edge)
+	imK, canny_edge, imR, canny_edgeK = pre_process(im, K, type = 0)
+	theta_deg = auto_rotate(canny_edgeK)
 	horiz_im = ndi.rotate(imK, -int(round(theta_deg)), mode='nearest',cval=255)
 	horiz_im = pre_process(horiz_im, K, type = 1)
 	imL = np.copy(horiz_im)
 	row_val, row_ind, scar_start, scar_length = get_row(imL)
-
 	# horiz_orig_im = ndi.rotate(im, -int(round(theta_deg)), mode='constant',cval=255)
 	# plt.imshow(horiz_orig_im)
 	# plt.imshow(horiz_orig_im,cmap='pink')
@@ -31,7 +30,7 @@ def red(im):
 	# Script_Run = Script_Run+1
 	# np.save('ScriptRun.npy',Script_Run)
 	K = 3
-	imK, canny_edge, imR = pre_process(im, K, type = 0)
+	imK, canny_edge, imR, canny_edgeK = pre_process(im, K, type = 0)
 	mask, avg_intesity = get_mask(imK, imR)
 
 	# plt.imshow(imK,cmap = 'gray')
@@ -115,6 +114,7 @@ def get_scar_coord(canny_edge):
 	#convert to a binary image
 	s = np.shape(canny_edge)
 	canny_bin = canny_edge.copy()
+	plt.imshow(canny_edge)
 	canny_mag = np.amax(canny_bin)
 	canny_bin = (canny_bin/canny_mag)*255    #scale image to 255
 	white_pix = 0     #initilise count for number of white pixels
@@ -156,7 +156,12 @@ def pre_process(im, K, type):
 
 		#take canny edges of kmeans
 		canny_edge = cv2.Canny(imK,200,100)
-		return imK, canny_edge, imR
+		imC = np.copy(imK)
+		low = np.min(imC)
+		imC[imC!=low] = 255
+
+		canny_edgeK = cv2.Canny(imC,200,100)
+		return imK, canny_edge, imR, canny_edgeK
 	if type == 1:
 		Z = np.reshape(im, (-1, 1))
 		# convert to np.float32 as required from kmeans input
