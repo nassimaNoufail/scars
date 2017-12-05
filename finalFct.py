@@ -10,7 +10,7 @@ import get_feature
 np.set_printoptions(threshold=np.inf)
 from tqdm import tqdm
 import os
-
+import workEllipse
 
 
 
@@ -64,10 +64,13 @@ def main():
         ax2 = plt.subplot(1,2,2)
         scar_length_pixels = get_feature.length(finalScar, Script_Run, j, 3, ax1)
         j += 1
-        red_diff_sticker, red_img_stic = redExtractor.main('sticker',cv2.imread(stickerFolder+sticker[i]),5000)
+        red_diff_sticker, red_img_stic = redExtractor.main('sticker',cv2.imread(stickerFolder+sticker[i]),6000)
         red_img_stic[red_img_stic==0] = 255
         red_img_stic[red_img_stic!=255] = 2
         circle_length_pixels = get_feature.length(red_img_stic, Script_Run, j, 2, ax2)
+        print(circle_length_pixels)
+        # elipse = workEllipse.getLength(red_img_stic)
+        # print(elipse)
         j += 1
         # avg_red = get_feature.red(finalScar)
         # red_diff_can = redExtractor.main('can',cv2.imread(canFolder+can[i]))
@@ -79,7 +82,7 @@ def main():
         # Final[i,3]=red_diff_sticker
         pixels_1mm_circle = circle_length_pixels/20
         actual_length_circle_mm = pixels_1mm_circle*scar_length_pixels
-        print(actual_length_circle_mm)
+        # print(actual_length_circle_mm)
         plt.savefig('Output' + str(Script_Run) + '/image_' + str((i+1)))
         plt.close()
     

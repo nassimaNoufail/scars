@@ -67,7 +67,7 @@ def getLength(image):
 
 
 
-    print(yc,xc,a,b,orientation)
+    # print(yc,xc,a,b,orientation)
 
 # Draw the ellipse on the original image
     cy, cx = ellipse_perimeter(yc, xc, a, b, orientation)
@@ -75,7 +75,7 @@ def getLength(image):
 # Draw the edge (white) and the resulting ellipse (red)
     edges = color.gray2rgb(edges)
     edges[cy, cx] = (250, 0, 0)
-    cv2.imshow('cv2', image_rgb)
-    cv2.waitKey(0)
+    # cv2.imshow('cv2', image_rgb)
+    # cv2.waitKey(0)
     LEN = 2*b
     return LEN
