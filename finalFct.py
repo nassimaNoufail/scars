@@ -42,7 +42,8 @@ def main():
     for (dirpath, dirnames, filenames) in walk(stickerFolder):
         sticker.extend(filenames)    
 
-    
+    scar.sort()
+    sticker.sort()
     folderLength=len(scar)
     
     Final=np.ones([folderLength,4])
@@ -53,17 +54,20 @@ def main():
     # os.makedirs('auto_length/'+str(scar_length)+'_run' + str(Script_Run))
     os.makedirs('Output' + str(Script_Run))
     j = 0
-    for i in tqdm(range(0,folderLength)):
+    for i in range(0,folderLength):
+        print(scar[i])
+        print(sticker[i])
         finalScar=imread(scarFolder+scar[i])
         finalSticker=imread(stickerFolder+sticker[i])
         #scar_lenght_pixels, scar_avg_intensity = kmeansT.main(scarFolder+f[i])
-
-        scar_length_pixels = get_feature.length(finalScar, Script_Run, j, 3)
+        ax1 = plt.subplot(1,2,1)
+        ax2 = plt.subplot(1,2,2)
+        scar_length_pixels = get_feature.length(finalScar, Script_Run, j, 3, ax1)
         j += 1
-        red_diff_sticker, red_img_stic = redExtractor.main('sticker',cv2.imread(stickerFolder+sticker[i]))
+        red_diff_sticker, red_img_stic = redExtractor.main('sticker',cv2.imread(stickerFolder+sticker[i]),5000)
         red_img_stic[red_img_stic==0] = 255
         red_img_stic[red_img_stic!=255] = 2
-        circle_length_pixels = get_feature.length(red_img_stic, Script_Run, j, 2)
+        circle_length_pixels = get_feature.length(red_img_stic, Script_Run, j, 2, ax2)
         j += 1
         # avg_red = get_feature.red(finalScar)
         # red_diff_can = redExtractor.main('can',cv2.imread(canFolder+can[i]))
@@ -76,7 +80,8 @@ def main():
         pixels_1mm_circle = circle_length_pixels/20
         actual_length_circle_mm = pixels_1mm_circle*scar_length_pixels
         print(actual_length_circle_mm)
-    
+        plt.savefig('Output' + str(Script_Run) + '/image_' + str((i+1)))
+        plt.close()
     
     # print('Scar length, Scar Red, can red difference, sticker red difference',Final)
     

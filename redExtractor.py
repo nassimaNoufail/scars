@@ -5,7 +5,7 @@ from scipy.misc import imread
 
 
 
-def main(choice,img):#choice,img
+def main(choice,img,thres):#choice,img
 
     
     #cv2.imread('sticker/19.png') # 'can/14.png' is a good example of image
@@ -30,7 +30,7 @@ def main(choice,img):#choice,img
     '''
     
     TR,TC,unused=np.shape(img)
-    redImg=redExtract(img,TR,TC)
+    redImg=redExtract(img,TR,TC,thres)
     
     
     
@@ -67,7 +67,7 @@ def main(choice,img):#choice,img
     
     return round(differenceInRed), redImg
 
-def redExtract(image,TR,TC):
+def redExtract(image,TR,TC,thres):
     differM=np.zeros([TR,TC])
     
     for i in range(0,TR):
@@ -76,7 +76,7 @@ def redExtract(image,TR,TC):
             
     for i in range(0,TR):
         for j in range(0,TC):
-            if differM[i,j]<9000:
+            if differM[i,j]<thres:
                 image[i,j,:]=0
             
         
