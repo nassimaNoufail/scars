@@ -24,9 +24,9 @@ def main():
     #cokeFolder=*sys.argv[2]
     
 
-    stickerFolder='47/sticker/'
-    scarFolder='47/scar/'
-    canFolder='47/can/'
+    stickerFolder='51/sticker/'
+    scarFolder='51/scar/'
+    canFolder='51/can/'
     
     # scarFolder='51/scar/'
     
