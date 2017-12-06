@@ -8,7 +8,7 @@ from os import walk
 import kmeansT
 import get_feature
 np.set_printoptions(threshold=np.inf)
-from tqdm import tqdm
+#efrom tqdm import tqdm
 
 
 
@@ -44,9 +44,9 @@ def main():
     
     folderLength=len(scar)
     
-    Final=np.ones([folderLength,4])
+    Final=np.ones([folderLength,5])
     
-    for i in tqdm(range(0,folderLength)):
+    for i in range(0,folderLength):
         finalScar=imread(scarFolder+scar[i])
         finalSticker=imread(stickerFolder+sticker[i])
         #scar_lenght_pixels, scar_avg_intensity = kmeansT.main(scarFolder+f[i])
@@ -60,6 +60,7 @@ def main():
         Final[i,1]=avg_red
         Final[i,2]=red_diff_can
         Final[i,3]=red_diff_sticker
+        Final[i,4]=avg_red+red_diff_can
         pixels_1mm_circle = circle_length_pixels/20
         actual_length_circle_mm = pixels_1mm_circle*scar_length_pixels
         print(actual_length_circle_mm)
