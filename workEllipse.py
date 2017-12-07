@@ -9,11 +9,11 @@ import numpy as np
 
 
 
-def getLength(image):
+def getLength(image_rgb):
 
     np.set_printoptions(threshold=np.inf)
 # Load picture, convert to grayscale and detect edges
-    image_rgb = cv2.imread(image)
+    # image_rgb = cv2.imread(image)
     image_gray = color.rgb2gray(image_rgb)
 
     s = np.shape(image_gray)

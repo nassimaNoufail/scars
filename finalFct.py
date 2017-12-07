@@ -68,9 +68,9 @@ def main():
         red_img_stic[red_img_stic==0] = 255
         red_img_stic[red_img_stic!=255] = 2
         circle_length_pixels = get_feature.length(red_img_stic, Script_Run, j, 2, ax2)
-        print(circle_length_pixels)
-        # elipse = workEllipse.getLength(red_img_stic)
-        # print(elipse)
+        print(circle_length_pixels )
+        elipse = workEllipse.getLength(red_img_stic)
+        print(elipse,'\n')
         j += 1
         # avg_red = get_feature.red(finalScar)
         # red_diff_can = redExtractor.main('can',cv2.imread(canFolder+can[i]))
