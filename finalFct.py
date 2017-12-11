@@ -24,9 +24,9 @@ def main():
     #cokeFolder=*sys.argv[2]
     
 
-    stickerFolder='51/sticker/'
-    scarFolder='51/scar/'
-    canFolder='51/can/'
+    stickerFolder='62/sticker/'
+    scarFolder='62/scar/'
+    canFolder='62/can/'
     
     # scarFolder='51/scar/'
     
@@ -68,9 +68,9 @@ def main():
         red_img_stic[red_img_stic==0] = 255
         red_img_stic[red_img_stic!=255] = 2
         circle_length_pixels = get_feature.length(red_img_stic, Script_Run, j, 2, ax2)
-        print(circle_length_pixels )
-        elipse = workEllipse.getLength(red_img_stic)
-        print(elipse,'\n')
+        # print(circle_length_pixels )
+        # elipse = workEllipse.getLength(red_img_stic)
+        # print(elipse,'\n')
         j += 1
         # avg_red = get_feature.red(finalScar)
         # red_diff_can = redExtractor.main('can',cv2.imread(canFolder+can[i]))
