@@ -8,9 +8,9 @@ from scipy.misc import imread
 def main():#choice,img
 
     
-    img=cv2.imread('47/sticker/12.png') # 'can/14.png' is a good example of image
+    img=cv2.imread('Test_data/47/47_5.png') # 'can/14.png' is a good example of image
     choice='can'
-    thres=9000
+    thres=7000
     
     if choice =='can':
         trueColour=244
@@ -27,6 +27,7 @@ def main():#choice,img
     cv2.namedWindow('original',cv2.WINDOW_NORMAL)
     cv2.resizeWindow('original', windowSize,windowSize)
     cv2.imshow('original',img)
+    cv2.imwrite('beforeExt.png',img)
     #'''
     
     TR,TC,unused=np.shape(img)
@@ -40,6 +41,7 @@ def main():#choice,img
     cv2.namedWindow('red extracted',cv2.WINDOW_NORMAL)
     cv2.resizeWindow('red extracted', windowSize,windowSize)
     cv2.imshow('red extracted',redImg)
+    cv2.imwrite('afterExt.png',redImg)
     #'''
     
     total=np.count_nonzero(redImg[:,:,2])
