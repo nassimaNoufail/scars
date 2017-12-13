@@ -25,12 +25,14 @@ def length(im, Script_Run, i, K, ax):
 	# ax1.imshow(imK)
 	# ax2.imshow(canny_edgeK)
 	ax.imshow(horiz_orig_im,cmap='pink')
-	ax.plot([scar_start, scar_start+scar_length], [row_ind, row_ind],linewidth=3)
+	ax.plot([scar_start, scar_start+scar_length], [row_ind, row_ind],linewidth=5)
+	ax.set_yticklabels([])
+	ax.set_xticklabels([])
 	ax.set_title(scar_length)
 	# plt.show()
 	
 
-	return scar_length
+	return scar_length, canny_edgeK
 
 def red(im):
 	# Script_Run = np.load('ScriptRun.npy')

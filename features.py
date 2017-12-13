@@ -14,7 +14,7 @@ def main():
 		im = imread(*sys.argv[1:])
 
 	#rotate image - in degrees
-	# im = ndi.rotate(im, 45, mode='constant')
+	# im = ndi.rotate(im, 45, mode='nearest')
 	K = 3
 	imK, canny_edge, imR = pre_process(im, K, type = 0)
 	mask, avg_intesity = get_mask(imK, imR)
